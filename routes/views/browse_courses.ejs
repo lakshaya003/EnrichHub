@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Browse Courses</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            background: #f4f6fb;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            background: #35503f9d;
+            padding-top: 30px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+        }
+
+        .sidebar a.active {
+            background: white;
+            color: #35503f;
+            font-weight: bold;
+            border-left: 5px solid #fbbf24;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+            color: #222;
+        }
+
+        .search {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+
+        .search:focus {
+            outline: none;
+            border-color: #35503f;
+            box-shadow: 0 0 8px rgba(53, 80, 63, 0.2);
+        }
+
+        .courses {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .badge {
+            background: #eef6ef;
+            color: #35503f;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            background: #35503f;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #35503f9d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+
+        #noResults {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar-brand h2 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+            <img src="/logo.png" alt="EnrichHub Logo" class="sidebar-logo">
+
+            <h2 onclick="location.href='/learner'" style="cursor:pointer;">
+                EnrichHub
+            </h2>
+
+        </div>
+
+        <a href="/learner">
+            Learner Dashboard
+        </a>
+
+        <a href="/learner/courses" class="active">
+            Browse Courses
+        </a>
+
+        <a href="/learner/bookings">
+            My Bookings
+        </a>
+
+        <a href="/learner/profile">
+            My Profile
+        </a>
+
+    </div>
+
+    <div class="main">
+
+        <a href="/learner" class="back-btn">
+            ← Back to Learner Dashboard
+        </a>
+
+        <h1>Browse Courses</h1>
+
+        <br>
+
+        <input id="searchInput" class="search" type="text"
+            placeholder="Search by title, category, age group or description...">
+
+        <p id="noResults">
+            No courses found.
+        </p>
+
+        <div class="courses">
+
+            <% events.forEach(event=> { %>
+
+                <div class="card" data-title="<%= event.title.toLowerCase() %>"
+                    data-category="<%= event.category.toLowerCase() %>" data-age="<%= event.age_group.toLowerCase() %>"
+                    data-description="<%= event.description.toLowerCase() %>">
+
+                    <span class="badge">
+                        <%= event.category %>
+                    </span>
+
+                    <br><br>
+
+                    <h2>
+                        <%= event.title %>
+                    </h2>
+
+                    <br>
+
+                    <p>
+                        <%= event.description %>
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <strong>Date:</strong>
+                        <%= new Date(event.event_date).toLocaleDateString('en-GB') %>
+                    </p>
+
+                    <p>
+                        <strong>Age Group:</strong>
+                        <%= event.age_group %>
+                    </p>
+
+                    <a href="/learner/course/<%= event.id %>" class="btn">
+                        View Course
+                    </a>
+
+                </div>
+
+                <% }) %>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const searchInput = document.getElementById("searchInput");
+        const cards = document.querySelectorAll(".card");
+        const noResults = document.getElementById("noResults");
+
+        searchInput.addEventListener("keyup", function () {
+
+            const searchTerm = this.value.toLowerCase().trim();
+
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+
+                const text =
+                    card.dataset.title + " " +
+                    card.dataset.category + " " +
+                    card.dataset.age + " " +
+                    card.dataset.description;
+
+                if (text.includes(searchTerm)) {
+                    card.style.display = "block";
+                    visibleCount++;
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
+
+            noResults.style.display =
+                visibleCount === 0 ? "block" : "none";
+
+        });
+
+    </script>
+
+</body>
+
+</html>
